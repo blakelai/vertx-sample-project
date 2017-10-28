@@ -1,5 +1,10 @@
 .gradle
+build/
+bin/
 .settings
+
+# Ignore VertX file cache
+.vertx/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -13,10 +18,7 @@ gradle-app.setting
 # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 gradle/wrapper/gradle-wrapper.properties
 
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+# Ignore generated files
+out/
+db/
+src/main/generated/
