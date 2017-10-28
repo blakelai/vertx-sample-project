@@ -1,0 +1,2 @@
+rootProject.name = 'vertx-wiki'
+include 'server', 'ui'

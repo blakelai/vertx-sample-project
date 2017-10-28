@@ -1,0 +1,205 @@
+plugins {
+  id 'application'
+  id 'com.github.johnrengelman.shadow' version '2.0.1'
+  id 'nu.studer.jooq' version '2.0.7'
+  id 'io.franzbecker.gradle-lombok' version '1.10'
+
+  //id 'checkstyle'
+  //id 'findbugs'
+  //id 'pmd'
+}
+
+repositories {
+  jcenter()
+}
+
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+mainClassName = 'io.vertx.core.Launcher'
+
+def vertxVersion = '3.4.2'
+def log4j2Version = '2.9.0'
+def jspareVersion = '3.1.1'
+def hikariVersion = '2.7.2'
+def hsqlVersion = '2.4.0'
+def vertxJooqVersion = '2.3.5'
+def javassistVersion = '3.22.0-GA'
+def alpnVersion = '2.0.6'
+def mainVerticleName = 'service:io.vertx.starter.wiki'
+def watchForChange = 'src/**/*'
+def doOnChange = './gradlew classes'
+
+task annotationProcessing(type: JavaCompile, group: 'build') { // codegen
+  source = sourceSets.main.java
+  classpath = configurations.compile + configurations.compileOnly
+  destinationDir = project.file('src/main/generated')
+  options.compilerArgs = [
+    "-proc:only",
+    "-processor", "io.vertx.codegen.CodeGenProcessor",
+    "-Acodegen.output=${project.projectDir}/src/main"
+  ]
+}
+
+compileJava {
+  targetCompatibility = 1.8
+  sourceCompatibility = 1.8
+
+  dependsOn annotationProcessing
+}
+
+sourceSets {
+  main {
+    java {
+      srcDirs += 'src/main/generated'
+    }
+  }
+}
+
+jooq {
+  version = '3.9.5'
+  edition = 'OSS'
+  database(sourceSets.main) {
+    jdbc {
+      driver = 'org.hsqldb.jdbcDriver'
+      url = 'jdbc:hsqldb:file:db/wiki'
+      user = 'sa'
+      password = ''
+    }
+    generator {
+      name = 'io.github.jklingsporn.vertx.jooq.generate.rx.RXVertxGenerator'
+      strategy {
+        name = 'io.github.jklingsporn.vertx.jooq.generate.rx.RXGeneratorStrategy'
+      }
+      database {
+        name = 'org.jooq.util.hsqldb.HSQLDBDatabase'
+        includes = '.*'
+        inputSchema = 'PUBLIC'
+        outputSchema = 'PUBLIC'
+        unsignedTypes = false
+        forcedTypes {
+          forcedType {
+            name = 'boolean'
+            types = '(?i:TINYINT)'
+          }
+          forcedType {
+            userType = 'io.vertx.core.json.JsonObject'
+            converter = 'io.github.jklingsporn.vertx.jooq.shared.JsonObjectConverter'
+            expression = 'someJsonObject'
+            types = '.*'
+          }
+          forcedType {
+            userType = 'io.vertx.core.json.JsonArray'
+            converter = 'io.github.jklingsporn.vertx.jooq.shared.JsonArrayConverter'
+            expression = 'someJsonObject'
+            types = '.*'
+          }
+          /*
+          forcedType {
+            name = 'varchar'
+            expression = '.*'
+            types = 'JSONB?'
+          }
+          forcedType {
+            name = 'varchar'
+            expression = '.*'
+            types = 'INET'
+          }
+          */
+        }
+      }
+      generate {
+        // relations = true
+        // deprecated = false
+        // records = true
+        // immutablePojos = true
+        interfaces = true
+        daos = true
+        fluentSetters = true
+      }
+      target {
+        packageName = 'io.vertx.starter.database'
+        directory = 'src/main/generated'
+      }
+    }
+  }
+}
+
+configurations {
+  agent
+}
+
+dependencies {
+  compile "io.vertx:vertx-core:$vertxVersion"
+  compile "io.vertx:vertx-rx-java:$vertxVersion"
+  compile "io.vertx:vertx-service-factory:$vertxVersion"
+  compile "io.vertx:vertx-service-proxy:$vertxVersion:processor"
+  compileOnly "io.vertx:vertx-codegen:$vertxVersion"
+
+  compile "org.jspare.vertx:vertx-jspare:$jspareVersion"
+  compile "org.jspare.vertx:vertx-jspare-web:$jspareVersion"
+  //compile "org.jspare.vertx.jpa:vertx-jspare-jpa:$jspareVersion"
+
+  compile "com.englishtown.vertx:vertx-guice:2.3.1"
+
+  compile "io.vertx:vertx-web:$vertxVersion"
+  compile "io.vertx:vertx-web-templ-freemarker:$vertxVersion"
+  compile "com.github.rjeschke:txtmark:0.13"
+
+  compile ("io.vertx:vertx-jdbc-client:$vertxVersion") {
+    exclude module: "c3p0"
+  }
+  compile "com.zaxxer:HikariCP:$hikariVersion"
+  compile "org.hsqldb:hsqldb:$hsqlVersion"
+
+  compile "org.jooq:jooq"
+  compile "io.github.jklingsporn:vertx-jooq-rx:$vertxJooqVersion"
+  jooqRuntime "io.github.jklingsporn:vertx-jooq-generate:$vertxJooqVersion"
+  jooqRuntime "org.hsqldb:hsqldb:$hsqlVersion"
+
+  //compile "com.google.inject.extensions:guice-persist:$guiceVersion"
+  //compile "com.adamlewis:guice-persist-jooq:0.2.0"
+
+  compile "io.vertx:vertx-auth-shiro:$vertxVersion"
+  compile "io.vertx:vertx-auth-jwt:$vertxVersion"
+
+  compile "io.vertx:vertx-web-client:$vertxVersion"
+
+  compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
+  compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
+  compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4j2Version"
+
+  compile "org.javassist:javassist:$javassistVersion"
+  compile "org.mortbay.jetty.alpn:jetty-alpn-agent:$alpnVersion"
+  agent "org.mortbay.jetty.alpn:jetty-alpn-agent:$alpnVersion"
+
+  testCompile "junit:junit:4.12"
+  testCompile "io.vertx:vertx-unit:$vertxVersion"
+  testCompileOnly "io.vertx:vertx-codegen:$vertxVersion"
+}
+
+shadowJar {
+  classifier = 'fat'
+  manifest {
+    attributes "Main-Verticle": mainVerticleName
+    attributes "Premain-Class": 'org.mortbay.jetty.alpn.agent.Premain'
+  }
+  mergeServiceFiles {
+    include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+  }
+}
+
+run {
+  args = ['run', mainVerticleName,
+          "--redeploy=$watchForChange",
+          "--launcher-class=$mainClassName",
+          "--java-opts=-javaagent:${configurations.agent.singleFile}",
+          "--on-redeploy=$doOnChange"]
+}
+
+test {
+  jvmArgs = ["-javaagent:${configurations.agent.singleFile}"]
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '4.2.1'
+}

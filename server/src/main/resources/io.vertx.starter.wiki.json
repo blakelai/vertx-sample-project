@@ -1,0 +1,12 @@
+{
+  "main": "io.vertx.starter.MainVerticle",
+  "options": {
+    "config": {
+      "port": 8080,
+      "jks_options": {
+        "path": "server-keystore.jks",
+        "password": "secret"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+plugins {
+  id 'com.moowork.node' version '1.2.0'
+}
+
+version '1.0-SNAPSHOT'
+
+task npmBuild(type: NpmTask, dependsOn: npmInstall) {
+  group = 'node'
+  args = ['run', 'build']
+}
+
+task npmDev(type: NpmTask, dependsOn: npmInstall) {
+  group = 'node'
+  args = ['run', 'dev']
+}
+
+jar.dependsOn(npmBuild)

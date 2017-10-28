@@ -1,0 +1,11 @@
+subprojects {
+  apply plugin: 'java'
+  group = 'io.vertx.starter'
+  version = '1.0'
+}
+
+project(':server') {
+  dependencies {
+    compile project(':ui')
+  }
+}
