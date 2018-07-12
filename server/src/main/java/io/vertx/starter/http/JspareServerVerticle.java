@@ -7,9 +7,11 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JdkSSLEngineOptions;
 import io.vertx.core.net.JksOptions;
-import io.vertx.ext.auth.jwt.JWTOptions;
+import io.vertx.ext.auth.KeyStoreOptions;
+import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.auth.shiro.ShiroAuthOptions;
 import io.vertx.ext.auth.shiro.ShiroAuthRealmType;
+import io.vertx.ext.jwt.JWTOptions;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.ext.web.handler.sockjs.PermittedOptions;
 import io.vertx.rxjava.core.http.HttpServer;
@@ -86,11 +88,12 @@ public class JspareServerVerticle extends JspareVerticle {
         .end();
     });
 
-    JWTAuth jwtAuth = JWTAuth.create(vertx, new JsonObject()
-      .put("keyStore", new JsonObject()
-        .put("path", "keystore.jceks")
-        .put("type", "jceks")
-        .put("password", "secret")));
+    JWTAuth jwtAuth = JWTAuth.create(vertx, new JWTAuthOptions()
+            .setKeyStore(new KeyStoreOptions()
+                    .setPath("keystore.jceks")
+                    .setType("jceks")
+                    .setPassword("secret")
+            ));
 
     Router apiRouter = RouterBuilder.create(vertx)
       .authHandler(() -> JWTAuthHandler.create(jwtAuth, "/api/token"))
@@ -124,7 +127,7 @@ public class JspareServerVerticle extends JspareVerticle {
           new JWTOptions()
             .setSubject("Wiki API")
             .setIssuer("Vert.x")
-            .setExpiresInMinutes(3600L)
+            .setExpiresInMinutes(3600)
             .setPermissions(permissions));
         });
 

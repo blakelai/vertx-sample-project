@@ -1,8 +1,8 @@
 plugins {
   id 'application'
-  id 'com.github.johnrengelman.shadow' version '2.0.1'
-  id 'nu.studer.jooq' version '2.0.7'
-  id 'io.franzbecker.gradle-lombok' version '1.10'
+  id 'com.github.johnrengelman.shadow' version '2.0.4'
+  id 'nu.studer.jooq' version '2.0.11'
+  id 'io.franzbecker.gradle-lombok' version '1.14'
 
   //id 'checkstyle'
   //id 'findbugs'
@@ -17,14 +17,15 @@ version = '1.0-SNAPSHOT'
 sourceCompatibility = '1.8'
 mainClassName = 'io.vertx.core.Launcher'
 
-def vertxVersion = '3.4.2'
-def log4j2Version = '2.9.0'
-def jspareVersion = '3.1.1'
-def hikariVersion = '2.7.2'
-def hsqlVersion = '2.4.0'
-def vertxJooqVersion = '2.3.5'
-def javassistVersion = '3.22.0-GA'
-def alpnVersion = '2.0.6'
+def vertxVersion = '3.5.2'
+def log4j2Version = '2.9.1'
+def jacksonVersion = '2.8.4'
+def jspareVersion = '3.2.0'
+def hikariVersion = '3.2.0'
+def hsqlVersion = '2.4.1'
+def vertxJooqVersion = '3.1.0'
+def javassistVersion = '3.23.0-GA'
+def alpnVersion = '2.0.7'
 def mainVerticleName = 'service:io.vertx.starter.wiki'
 def watchForChange = 'src/**/*'
 def doOnChange = './gradlew classes'
@@ -56,7 +57,7 @@ sourceSets {
 }
 
 jooq {
-  version = '3.9.5'
+  version = '3.10.8'
   edition = 'OSS'
   database(sourceSets.main) {
     jdbc {
@@ -66,9 +67,9 @@ jooq {
       password = ''
     }
     generator {
-      name = 'io.github.jklingsporn.vertx.jooq.generate.rx.RXVertxGenerator'
+      name = 'io.github.jklingsporn.vertx.jooq.generate.VertxGenerator'
       strategy {
-        name = 'io.github.jklingsporn.vertx.jooq.generate.rx.RXGeneratorStrategy'
+        name = 'io.github.jklingsporn.vertx.jooq.generate.rx.JDBCRXVertxGeneratorStrategy'
       }
       database {
         name = 'org.jooq.util.hsqldb.HSQLDBDatabase'
@@ -135,6 +136,12 @@ dependencies {
   compile "io.vertx:vertx-service-proxy:$vertxVersion:processor"
   compileOnly "io.vertx:vertx-codegen:$vertxVersion"
 
+  compile ("com.fasterxml.jackson.core:jackson-core:$jacksonVersion") {
+    force = true
+  }
+  compile ("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion") {
+    force = true
+  }
   compile "org.jspare.vertx:vertx-jspare:$jspareVersion"
   compile "org.jspare.vertx:vertx-jspare-web:$jspareVersion"
   //compile "org.jspare.vertx.jpa:vertx-jspare-jpa:$jspareVersion"
@@ -152,7 +159,7 @@ dependencies {
   compile "org.hsqldb:hsqldb:$hsqlVersion"
 
   compile "org.jooq:jooq"
-  compile "io.github.jklingsporn:vertx-jooq-rx:$vertxJooqVersion"
+  compile "io.github.jklingsporn:vertx-jooq-rx-jdbc:$vertxJooqVersion"
   jooqRuntime "io.github.jklingsporn:vertx-jooq-generate:$vertxJooqVersion"
   jooqRuntime "org.hsqldb:hsqldb:$hsqlVersion"
 
@@ -201,5 +208,5 @@ test {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '4.2.1'
+  gradleVersion = '4.8.1'
 }
