@@ -5,11 +5,18 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.github.jklingsporn.vertx.jooq.rx.jdbc.JDBCRXGenericQueryExecutor;
+import io.github.jklingsporn.vertx.jooq.rx.jdbc.JDBCRXQueryExecutor;
+import io.github.jklingsporn.vertx.jooq.shared.internal.QueryExecutor;
+import io.github.jklingsporn.vertx.jooq.shared.internal.jdbc.JDBCQueryExecutor;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
+import io.vertx.starter.database.tables.daos.PagesDao;
+import io.vertx.starter.database.tables.interfaces.IPages;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 
 import javax.sql.DataSource;
@@ -54,13 +61,23 @@ public class WikiDatabaseBinder extends AbstractModule {
   }
 
   @Provides @Singleton
-  public io.vertx.rxjava.ext.jdbc.JDBCClient provideRxJDBCClient(JDBCClient client) {
-    return io.vertx.rxjava.ext.jdbc.JDBCClient.newInstance(client);
+  public io.vertx.reactivex.ext.jdbc.JDBCClient provideRxJDBCClient(JDBCClient client) {
+    return io.vertx.reactivex.ext.jdbc.JDBCClient.newInstance(client);
   }
 
   @Provides @Singleton
-  public Configuration providerConfiguration(DataSource ds) {
-    return new DefaultConfiguration().set(ds);
+  public Configuration provideConfiguration(DataSource ds) {
+    return new DefaultConfiguration().set(SQLDialect.HSQLDB).set(ds);
+  }
+
+  @Provides @Singleton
+  public JDBCRXGenericQueryExecutor provideDSL(Configuration configuration, Vertx vertx) {
+    return new JDBCRXGenericQueryExecutor(configuration, io.vertx.reactivex.core.Vertx.newInstance(vertx));
+  }
+
+  @Provides @Singleton
+  public PagesDao providePagesDao (Configuration configuration, Vertx vertx) {
+    return new PagesDao(configuration, io.vertx.reactivex.core.Vertx.newInstance(vertx));
   }
 
 }

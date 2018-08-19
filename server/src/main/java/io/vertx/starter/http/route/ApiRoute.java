@@ -2,12 +2,12 @@ package io.vertx.starter.http.route;
 
 import com.github.rjeschke.txtmark.Processor;
 import com.google.common.net.HttpHeaders;
+import io.reactivex.Observable;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import io.vertx.starter.rxjava.database.WikiDatabaseService;
-import org.jspare.vertx.rxjava.web.handler.APIHandler;
-import org.jspare.vertx.web.annotation.auth.Auth;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.starter.reactivex.database.WikiDatabaseService;
+import org.jspare.vertx.reactivex.web.handler.APIHandler;
 import org.jspare.vertx.web.annotation.handler.Handler;
 import org.jspare.vertx.web.annotation.handling.Parameter;
 import org.jspare.vertx.web.annotation.method.Delete;
@@ -16,7 +16,6 @@ import org.jspare.vertx.web.annotation.method.Post;
 import org.jspare.vertx.web.annotation.method.Put;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.Observable;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -54,7 +53,7 @@ public class ApiRoute extends APIHandler {
   @Handler
   public void apiRoot(RoutingContext context) {
     dbService.rxFetchAllPagesData()
-      .flatMapObservable(Observable::from)
+      .flatMapObservable(Observable::fromIterable)
       .map(obj -> new JsonObject()
         .put("id", obj.getInteger("ID"))
         .put("name", obj.getString("NAME")))
@@ -102,7 +101,7 @@ public class ApiRoute extends APIHandler {
       return;
     }
 
-    dbService.rxCreatePage(page.getString("name"), page.getString("markdown"))
+    dbService.rxCreatePage(page.getString("name"), page.getString("markdown")).toObservable()
       .subscribe(v -> apiResponse(context, 201, null, null), t -> apiFailure(context, t));
   }
 
@@ -114,7 +113,7 @@ public class ApiRoute extends APIHandler {
       return;
     }
 
-    dbService.rxSavePage(id, page.getString("markdown"))
+    dbService.rxSavePage(id, page.getString("markdown")).toSingleDefault(true)
       .doOnSuccess(v -> {
         JsonObject event = new JsonObject()
           .put("id", id)
@@ -128,7 +127,7 @@ public class ApiRoute extends APIHandler {
   @Delete("/pages/:id")
   @Handler
   public void apiDeletePage(RoutingContext context, @Parameter("id") Integer id) {
-    dbService.rxDeletePage(id)
+    dbService.rxDeletePage(id).toObservable()
       .subscribe(v -> apiResponse(context, 200, null, null), t -> apiFailure(context, t));
   }
 

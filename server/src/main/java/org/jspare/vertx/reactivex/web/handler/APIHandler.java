@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jspare.vertx.rxjava.web.handler;
+package org.jspare.vertx.reactivex.web.handler;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -22,15 +22,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpServerRequest;
-import io.vertx.rxjava.core.http.HttpServerResponse;
-import io.vertx.rxjava.ext.auth.User;
-import io.vertx.rxjava.ext.web.Cookie;
-import io.vertx.rxjava.ext.web.FileUpload;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import io.vertx.rxjava.ext.web.handler.sockjs.SockJSSocket;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.http.HttpServerRequest;
+import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.reactivex.ext.auth.User;
+import io.vertx.reactivex.ext.web.Cookie;
+import io.vertx.reactivex.ext.web.FileUpload;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.handler.sockjs.SockJSSocket;
 import org.jspare.vertx.concurrent.FutureSupplier;
 
 import io.netty.handler.codec.http.HttpResponseStatus;

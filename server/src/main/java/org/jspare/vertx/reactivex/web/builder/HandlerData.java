@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jspare.vertx.rxjava.web.builder;
+package org.jspare.vertx.reactivex.web.builder;
 
 import io.vertx.core.Handler;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import io.vertx.rxjava.ext.web.handler.AuthHandler;
-import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.handler.AuthHandler;
+import io.vertx.reactivex.ext.web.handler.sockjs.SockJSHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

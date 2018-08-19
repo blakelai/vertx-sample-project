@@ -13,17 +13,17 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jspare.vertx.rxjava.web.builder;
+package org.jspare.vertx.reactivex.web.builder;
 
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.rxjava.ext.web.Route;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.Route;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.RoutingContext;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.StringUtils;
-import org.jspare.vertx.rxjava.web.handler.DefaultSockJSHandler;
+import org.jspare.vertx.reactivex.web.handler.DefaultSockJSHandler;
 import org.jspare.vertx.web.builder.HandlerType;
 
 import java.lang.reflect.InvocationTargetException;

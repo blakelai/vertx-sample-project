@@ -1,4 +1,4 @@
-package org.jspare.vertx.rxjava.web.builder;
+package org.jspare.vertx.reactivex.web.builder;
 
 import lombok.Getter;
 

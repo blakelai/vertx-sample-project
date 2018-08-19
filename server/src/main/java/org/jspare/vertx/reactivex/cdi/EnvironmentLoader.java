@@ -1,10 +1,10 @@
-package org.jspare.vertx.rxjava.cdi;
+package org.jspare.vertx.reactivex.cdi;
 
-import io.vertx.rxjava.core.Context;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.file.FileSystem;
-import io.vertx.rxjava.core.shareddata.SharedData;
+import io.vertx.reactivex.core.Context;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.eventbus.EventBus;
+import io.vertx.reactivex.core.file.FileSystem;
+import io.vertx.reactivex.core.shareddata.SharedData;
 import lombok.experimental.UtilityClass;
 import org.jspare.core.Environment;
 import org.jspare.core.internal.Bind;

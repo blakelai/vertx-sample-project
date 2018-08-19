@@ -13,23 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jspare.vertx.rxjava.web.builder;
+package org.jspare.vertx.reactivex.web.builder;
 
 import io.github.lukehutch.fastclasspathscanner.matchprocessor.MethodAnnotationMatchProcessor;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.handler.sockjs.SockJSHandlerOptions;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.Route;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import io.vertx.rxjava.ext.web.handler.AuthHandler;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.Route;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.handler.AuthHandler;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.jspare.vertx.builder.AbstractBuilder;
-import org.jspare.vertx.rxjava.web.handler.DefaultHandler;
+import org.jspare.vertx.reactivex.web.handler.DefaultHandler;
 import org.jspare.vertx.utils.ClasspathScannerUtils;
 
 import java.util.*;

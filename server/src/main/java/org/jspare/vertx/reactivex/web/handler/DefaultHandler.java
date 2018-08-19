@@ -13,16 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jspare.vertx.rxjava.web.handler;
+package org.jspare.vertx.reactivex.web.handler;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.http.HttpServerRequest;
-import io.vertx.rxjava.core.http.HttpServerResponse;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.core.http.HttpServerRequest;
+import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.reactivex.ext.web.RoutingContext;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import org.apache.commons.lang.SerializationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jspare.core.Environment;
-import org.jspare.vertx.rxjava.web.builder.HandlerData;
+import org.jspare.vertx.reactivex.web.builder.HandlerData;
 import org.jspare.vertx.web.annotation.handling.*;
 
 import java.lang.reflect.Parameter;

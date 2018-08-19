@@ -1,16 +1,16 @@
 package io.vertx.starter;
 
+import io.reactivex.Single;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.starter.database.WikiDatabaseBinder;
 import io.vertx.starter.database.WikiDatabaseVerticle;
 import io.vertx.starter.http.JspareServerVerticle;
-import org.jspare.vertx.rxjava.cdi.EnvironmentLoader;
+import org.jspare.vertx.reactivex.cdi.EnvironmentLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.Single;
 
 public class MainVerticle extends AbstractVerticle {
 

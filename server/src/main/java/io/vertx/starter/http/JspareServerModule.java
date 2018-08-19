@@ -1,9 +1,9 @@
 package io.vertx.starter.http;
 
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.client.WebClient;
-import io.vertx.starter.rxjava.database.WikiDatabaseService;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.client.WebClient;
+import io.vertx.starter.reactivex.database.WikiDatabaseService;
 import org.jspare.vertx.AbstractModule;
 
 import javax.inject.Inject;

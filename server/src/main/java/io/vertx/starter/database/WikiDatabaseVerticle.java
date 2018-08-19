@@ -1,10 +1,13 @@
 package io.vertx.starter.database;
 
 import com.google.inject.Inject;
+import io.github.jklingsporn.vertx.jooq.rx.jdbc.JDBCRXGenericQueryExecutor;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.rxjava.ext.jdbc.JDBCClient;
+import io.vertx.reactivex.ext.jdbc.JDBCClient;
 import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ServiceBinder;
+import io.vertx.starter.database.tables.daos.PagesDao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,6 +23,12 @@ public class WikiDatabaseVerticle extends AbstractVerticle {
   @Inject
   private JDBCClient dbClient;
 
+  @Inject
+  private JDBCRXGenericQueryExecutor queryExecutor;
+
+  @Inject
+  private PagesDao pagesDao;
+
   private final HashMap<SqlQuery, String> sqlQueries = new HashMap<>();
 
   @Override
@@ -27,7 +36,7 @@ public class WikiDatabaseVerticle extends AbstractVerticle {
 
     HashMap<SqlQuery, String> sqlQueries = loadSqlQueries();
 
-    WikiDatabaseService.create(dbClient, sqlQueries, ready -> {
+    WikiDatabaseService.create(queryExecutor, pagesDao, dbClient, sqlQueries, ready -> {
       if (ready.succeeded()) {
         ProxyHelper.registerService(WikiDatabaseService.class, vertx, ready.result(), CONFIG_WIKIDB_QUEUE);
         startFuture.complete();

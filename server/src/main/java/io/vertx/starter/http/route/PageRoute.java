@@ -3,14 +3,16 @@ package io.vertx.starter.http.route;
 import com.github.rjeschke.txtmark.Processor;
 import com.google.common.net.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.ext.auth.User;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import io.vertx.rxjava.ext.web.client.WebClient;
-import io.vertx.rxjava.ext.web.codec.BodyCodec;
-import io.vertx.rxjava.ext.web.templ.FreeMarkerTemplateEngine;
-import io.vertx.starter.rxjava.database.WikiDatabaseService;
-import org.jspare.vertx.rxjava.web.handler.APIHandler;
+import io.vertx.reactivex.ext.auth.User;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.client.WebClient;
+import io.vertx.reactivex.ext.web.codec.BodyCodec;
+import io.vertx.reactivex.ext.web.templ.FreeMarkerTemplateEngine;
+import io.vertx.starter.reactivex.database.WikiDatabaseService;
+import org.jspare.vertx.reactivex.web.handler.APIHandler;
 import org.jspare.vertx.web.annotation.auth.Auth;
 import org.jspare.vertx.web.annotation.handler.Handler;
 import org.jspare.vertx.web.annotation.handling.Parameter;
@@ -18,7 +20,6 @@ import org.jspare.vertx.web.annotation.method.Get;
 import org.jspare.vertx.web.annotation.method.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.Single;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -55,9 +56,10 @@ public class PageRoute extends APIHandler {
     }
   }
 
-  private Single<Void> checkAuthorised(RoutingContext context, String authority) {
+  private Completable checkAuthorised(RoutingContext context, String authority) {
     return context.user().rxIsAuthorised(authority)
-      .flatMap(authorized -> authorized ? Single.<Void>just(null) : Single.error(new UnauthorizedThrowable(authority)));
+      .flatMapCompletable(authorized ->
+              authorized ? Completable.complete() : Completable.error(new UnauthorizedThrowable(authority)));
   }
 
   @Get("/login")
@@ -133,12 +135,14 @@ public class PageRoute extends APIHandler {
     String title = context.request().getParam("title");
     boolean pageCreation = "yes".equals(context.request().getParam("newPage"));
     String markdown = context.request().getParam("markdown");
-    checkAuthorised(context, pageCreation ? "create" : "update")
+    checkAuthorised(context, pageCreation ? "create" : "update").toSingleDefault(true)
       .flatMap(v -> {
         if (pageCreation) {
-          return dbService.rxCreatePage(title, markdown);
+          return dbService.rxCreatePage(title, markdown)
+                  .toSingleDefault(true);
         } else {
-          return dbService.rxSavePage(Integer.valueOf(context.request().getParam("id")), markdown);
+          return dbService.rxSavePage(Integer.valueOf(context.request().getParam("id")), markdown)
+                  .toSingleDefault(true);
         }
       })
       .subscribe(v -> {
@@ -169,7 +173,7 @@ public class PageRoute extends APIHandler {
   @Handler
   public void pageDeletionHandler(RoutingContext context) {
     dbService.rxDeletePage(Integer.parseInt(context.request().getParam("id")))
-      .subscribe(v -> {
+      .toObservable().subscribe(v -> {
         context.response()
           .setStatusCode(HttpResponseStatus.SEE_OTHER.code())
           .putHeader(HttpHeaders.LOCATION, "/")

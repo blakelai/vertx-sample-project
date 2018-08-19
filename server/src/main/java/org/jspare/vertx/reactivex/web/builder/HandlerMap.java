@@ -1,7 +1,7 @@
-package org.jspare.vertx.rxjava.web.builder;
+package org.jspare.vertx.reactivex.web.builder;
 
 import io.vertx.core.Handler;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.RoutingContext;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jspare.vertx.rxjava.web.handler;
+package org.jspare.vertx.reactivex.web.handler;
 
 import java.lang.reflect.Parameter;
 
-import io.vertx.rxjava.ext.web.handler.sockjs.SockJSSocket;
-import org.jspare.vertx.rxjava.web.builder.HandlerData;
+import io.vertx.reactivex.ext.web.handler.sockjs.SockJSSocket;
+import org.jspare.vertx.reactivex.web.builder.HandlerData;
 import org.jspare.vertx.web.annotation.handling.Header;
 
 import io.vertx.core.net.SocketAddress;

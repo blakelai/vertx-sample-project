@@ -1,5 +1,6 @@
 package io.vertx.starter.database;
 
+import io.github.jklingsporn.vertx.jooq.rx.jdbc.JDBCRXGenericQueryExecutor;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.codegen.annotations.ProxyGen;
@@ -9,7 +10,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.ext.jdbc.JDBCClient;
+import io.vertx.reactivex.ext.jdbc.JDBCClient;
+import io.vertx.starter.database.tables.daos.PagesDao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +21,13 @@ import java.util.List;
 public interface WikiDatabaseService {
 
   @GenIgnore
-  static WikiDatabaseService create(JDBCClient dbClient, HashMap<SqlQuery, String> sqlQueries, Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
-    return new WikiDatabaseServiceImpl(dbClient, sqlQueries, readyHandler);
+  static WikiDatabaseService create(JDBCRXGenericQueryExecutor queryExecutor, PagesDao pagesDao, JDBCClient dbClient, HashMap<SqlQuery, String> sqlQueries, Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
+    return new WikiDatabaseServiceImpl(queryExecutor, pagesDao, dbClient, sqlQueries, readyHandler);
   }
 
   @GenIgnore
-  static io.vertx.starter.rxjava.database.WikiDatabaseService createProxy(Vertx vertx, String address) {
-    return new io.vertx.starter.rxjava.database.WikiDatabaseService(new WikiDatabaseServiceVertxEBProxy(vertx, address));
+  static io.vertx.starter.reactivex.database.WikiDatabaseService createProxy(Vertx vertx, String address) {
+    return new io.vertx.starter.reactivex.database.WikiDatabaseService(new WikiDatabaseServiceVertxEBProxy(vertx, address));
   }
 
   @Fluent
